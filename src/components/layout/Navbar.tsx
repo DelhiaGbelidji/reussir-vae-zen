@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -47,11 +49,36 @@ const Navbar = () => {
                 {item.name}
               </NavLink>
             ))}
-            <NavLink to="/connexion">
-              <Button variant="gradient" size="default">
-                Connexion
-              </Button>
-            </NavLink>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 text-sm">
+                  <User className="h-4 w-4" />
+                  <span>{user.email}</span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={signOut}
+                  className="flex items-center space-x-2"
+                  size="sm"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Déconnexion</span>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <NavLink to="/connexion">
+                  <Button variant="outline" size="default">
+                    Connexion
+                  </Button>
+                </NavLink>
+                <NavLink to="/inscription">
+                  <Button variant="gradient" size="default">
+                    Inscription
+                  </Button>
+                </NavLink>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -82,11 +109,38 @@ const Navbar = () => {
                 {item.name}
               </NavLink>
             ))}
-            <NavLink to="/connexion" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="gradient" size="default" className="w-full mt-2">
-                Connexion
-              </Button>
-            </NavLink>
+            {user ? (
+              <div className="space-y-4 mt-4">
+                <div className="flex items-center space-x-2 text-sm">
+                  <User className="h-4 w-4" />
+                  <span>{user.email}</span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    signOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center space-x-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Déconnexion</span>
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2 mt-4">
+                <NavLink to="/connexion" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" size="default" className="w-full">
+                    Connexion
+                  </Button>
+                </NavLink>
+                <NavLink to="/inscription" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="gradient" size="default" className="w-full">
+                    Inscription
+                  </Button>
+                </NavLink>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -7,22 +7,17 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
-const Login = () => {
+const Signup = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
+    displayName: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn, user } = useAuth();
+  const { signUp } = useAuth();
   const navigate = useNavigate();
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,21 +26,31 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      const { error } = await signIn(formData.email, formData.password);
+      const { error } = await signUp(formData.email, formData.password, formData.displayName);
       
       if (error) {
         toast({
-          title: "Erreur de connexion",
+          title: "Erreur d'inscription",
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Connexion réussie !",
-          description: "Vous êtes maintenant connecté",
+          title: "Inscription réussie !",
+          description: "Votre compte a été créé avec succès",
         });
         navigate("/");
       }
@@ -66,14 +71,28 @@ const Login = () => {
       <main className="flex-1 flex items-center justify-center py-12">
         <div className="w-full max-w-md px-4">
           <div className="text-center mb-8">
-            <h1 className="font-heading text-3xl font-bold">Connexion</h1>
+            <h1 className="font-heading text-3xl font-bold">Créer un compte</h1>
             <p className="text-muted-foreground mt-2">
-              Accédez à votre espace personnel
+              Rejoignez-nous pour commencer votre parcours VAE
             </p>
           </div>
           
           <div className="bg-card rounded-lg border shadow-sm p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="displayName" className="text-sm font-medium">
+                  Nom d'affichage
+                </label>
+                <Input
+                  id="displayName"
+                  name="displayName"
+                  type="text"
+                  value={formData.displayName}
+                  onChange={handleChange}
+                  placeholder="Votre nom"
+                />
+              </div>
+              
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
                   Email
@@ -87,23 +106,30 @@ const Login = () => {
                   required
                 />
               </div>
+              
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Mot de passe
-                  </label>
-                  <Link 
-                    to="/mot-de-passe-oublie" 
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Mot de passe oublié ?
-                  </Link>
-                </div>
+                <label htmlFor="password" className="text-sm font-medium">
+                  Mot de passe
+                </label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="confirmPassword" className="text-sm font-medium">
+                  Confirmer le mot de passe
+                </label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
                   onChange={handleChange}
                   required
                 />
@@ -115,15 +141,15 @@ const Login = () => {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? "Connexion..." : "Se connecter"}
+                {isLoading ? "Création..." : "Créer mon compte"}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Vous n'avez pas de compte ?{" "}
-                <Link to="/inscription" className="text-primary hover:underline">
-                  Créer un compte
+                Vous avez déjà un compte ?{" "}
+                <Link to="/connexion" className="text-primary hover:underline">
+                  Se connecter
                 </Link>
               </p>
             </div>
@@ -135,4 +161,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
