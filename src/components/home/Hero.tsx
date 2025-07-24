@@ -23,11 +23,6 @@ const Hero = () => {
                   <ArrowRight className="ml-1" />
                 </Button>
               </Link>
-              <Link to="/a-propos">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  En savoir plus
-                </Button>
-              </Link>
             </div>
           </div>
 

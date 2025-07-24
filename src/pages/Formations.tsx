@@ -1,15 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FormationCard from "@/components/formations/FormationCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import formations from "@/data/formations";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Formation {
+  id: string;
+  title: string;
+  domain: string;
+  duration: string;
+  prerequisites: string;
+  summary: string;
+  slug: string;
+}
 
 const Formations = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+  const [formations, setFormations] = useState<Formation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFormations();
+  }, []);
+
+  const fetchFormations = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('formations')
+        .select('*')
+        .order('title');
+
+      if (error) throw error;
+      setFormations(data || []);
+    } catch (error) {
+      console.error('Error fetching formations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Extract unique domains for filtering
   const domains = [...new Set(formations.map((formation) => formation.domain))];
@@ -77,7 +109,11 @@ const Formations = () => {
         {/* Formations list */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            {filteredFormations.length > 0 ? (
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="animate-pulse">Chargement des formations...</div>
+              </div>
+            ) : filteredFormations.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFormations.map((formation) => (
                   <FormationCard key={formation.id} formation={formation} />

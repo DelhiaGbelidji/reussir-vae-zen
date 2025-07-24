@@ -17,7 +17,7 @@ const Navbar = () => {
   const navItems = [
     { name: "Accueil", path: "/" },
     { name: "Formations", path: "/formations" },
-    { name: "À propos", path: "/a-propos" },
+    ...(user ? [{ name: "Tableau de bord", path: "/tableau-de-bord" }] : []),
     { name: "Contact", path: "/contact" },
   ];
 

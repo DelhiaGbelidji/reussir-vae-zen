@@ -1,17 +1,89 @@
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Clock, GraduationCap, Layers, ArrowLeft, BookOpen } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import QuizCard from "@/components/quiz/QuizCard";
-import formations from "@/data/formations";
-import quizzes from "@/data/quizzes";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Formation {
+  id: string;
+  title: string;
+  domain: string;
+  duration: string;
+  prerequisites: string;
+  summary: string;
+  description: string;
+  slug: string;
+}
+
+interface Quiz {
+  id: string;
+  title: string;
+  description: string;
+  question_count: number;
+  estimated_time: string;
+  difficulty: 'facile' | 'moyen' | 'difficile';
+  formation_id: string;
+  slug: string;
+}
 
 const FormationDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const formation = formations.find((f) => f.slug === slug);
-  const relatedQuizzes = quizzes.filter((q) => q.formationId === formation?.id);
+  const [formation, setFormation] = useState<Formation | null>(null);
+  const [relatedQuizzes, setRelatedQuizzes] = useState<Quiz[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (slug) {
+      fetchFormationData();
+    }
+  }, [slug]);
+
+  const fetchFormationData = async () => {
+    try {
+      // Fetch formation
+      const { data: formationData, error: formationError } = await supabase
+        .from('formations')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+
+      if (formationError) throw formationError;
+      setFormation(formationData);
+
+      // Fetch related quizzes
+      const { data: quizzesData, error: quizzesError } = await supabase
+        .from('quizzes')
+        .select('*')
+        .eq('formation_id', formationData.id);
+
+      if (quizzesError) throw quizzesError;
+      const formattedQuizzes = quizzesData?.map(q => ({
+        ...q,
+        difficulty: q.difficulty as 'facile' | 'moyen' | 'difficile'
+      })) || [];
+      setRelatedQuizzes(formattedQuizzes);
+    } catch (error) {
+      console.error('Error fetching formation data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-pulse">Chargement...</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!formation) {
     return (
@@ -76,6 +148,9 @@ const FormationDetail = () => {
                     {formation.summary}
                   </p>
                   <p className="mb-4">
+                    {formation.description}
+                  </p>
+                  <p className="mb-4">
                     Cette certification est accessible par la Validation des Acquis de l'Expérience (VAE).
                     Pour l'obtenir, vous devrez démontrer que vous possédez les compétences, aptitudes et
                     connaissances nécessaires à travers votre expérience professionnelle.
@@ -94,7 +169,12 @@ const FormationDetail = () => {
                   {relatedQuizzes.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {relatedQuizzes.map((quiz) => (
-                        <QuizCard key={quiz.id} quiz={quiz} />
+                        <QuizCard key={quiz.id} quiz={{
+                          ...quiz,
+                          formationId: quiz.formation_id,
+                          questionCount: quiz.question_count,
+                          estimatedTime: quiz.estimated_time
+                        }} />
                       ))}
                     </div>
                   ) : (

@@ -10,7 +10,10 @@ import FormationDetail from "./pages/FormationDetail";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import QuizInterface from "./pages/QuizInterface";
 import NotFound from "./pages/NotFound";
+import Chatbot from "./components/chat/Chatbot";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +24,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <Chatbot />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/formations" element={<Formations />} />
@@ -28,6 +32,8 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/connexion" element={<Login />} />
             <Route path="/inscription" element={<Signup />} />
+            <Route path="/tableau-de-bord" element={<Dashboard />} />
+            <Route path="/quiz/:slug" element={<QuizInterface />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
