@@ -88,14 +88,6 @@ export const Newsletter = ({ isOpen, onClose }: NewsletterProps) => {
             <Mail className="h-5 w-5" />
             Newsletter VAE
           </DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="absolute right-4 top-4 h-6 w-6"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
         
         <div className="space-y-4">
