@@ -40,24 +40,29 @@ export const Newsletter = ({ isOpen, onClose }: NewsletterProps) => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
-        .from("newsletter_subscribers")
-        .insert([{ email: email.trim().toLowerCase() }]);
+      // Call our edge function that handles both MailerLite and database
+      const { data, error } = await supabase.functions.invoke('newsletter-subscribe', {
+        body: { email: email.trim().toLowerCase() }
+      });
 
       if (error) {
-        if (error.code === "23505") { // Unique constraint violation
+        throw error;
+      }
+
+      if (data?.error) {
+        if (data.error.includes('already exists') || data.error.includes('Déjà inscrit')) {
           toast({
             title: "Déjà inscrit",
             description: "Cette adresse e-mail est déjà inscrite à la newsletter",
             variant: "destructive",
           });
         } else {
-          throw error;
+          throw new Error(data.error);
         }
       } else {
         toast({
           title: "Inscription réussie !",
-          description: "Merci de vous être inscrit à notre newsletter VAE",
+          description: "Merci de vous être inscrit à notre newsletter VAE. Vous recevrez bientôt un email de confirmation.",
         });
         setEmail("");
         setConfirmEmail("");
