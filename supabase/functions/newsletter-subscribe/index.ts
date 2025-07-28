@@ -59,6 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
         email: email.toLowerCase().trim(),
         status: 'active',
         resubscribe: false,
+        groups: ['vae'],
       }),
     });
 
