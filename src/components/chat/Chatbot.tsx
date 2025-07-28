@@ -177,7 +177,7 @@ const Chatbot = () => {
                 onKeyPress={handleKeyPress}
                 placeholder="Tapez votre message..."
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 bg-background text-foreground border-input"
               />
               <Button
                 onClick={sendMessage}
