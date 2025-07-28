@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { Newsletter, useNewsletterPopup } from "@/components/newsletter/Newsletter";
 import Index from "./pages/Index";
 import Formations from "./pages/Formations";
 import FormationDetail from "./pages/FormationDetail";
@@ -17,30 +18,35 @@ import Chatbot from "./components/chat/Chatbot";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Chatbot />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/formations" element={<Formations />} />
-            <Route path="/formations/:slug" element={<FormationDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/connexion" element={<Login />} />
-            <Route path="/inscription" element={<Signup />} />
-            <Route path="/tableau-de-bord" element={<Dashboard />} />
-            <Route path="/quiz/:slug" element={<QuizInterface />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const { showPopup, closePopup } = useNewsletterPopup();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Chatbot />
+            <Newsletter isOpen={showPopup} onClose={closePopup} />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/formations" element={<Formations />} />
+              <Route path="/formations/:slug" element={<FormationDetail />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/connexion" element={<Login />} />
+              <Route path="/inscription" element={<Signup />} />
+              <Route path="/tableau-de-bord" element={<Dashboard />} />
+              <Route path="/quiz/:slug" element={<QuizInterface />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

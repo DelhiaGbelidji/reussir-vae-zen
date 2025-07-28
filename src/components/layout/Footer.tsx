@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Mail } from "lucide-react";
+import { NewsletterLink } from "@/components/newsletter/NewsletterLink";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
@@ -89,9 +90,7 @@ const Footer = () => {
                 <Mail size={20} />
               </a>
             </div>
-            <NavLink to="/newsletter" className="text-sm hover:text-primary transition-colors">
-              S'inscrire à la newsletter
-            </NavLink>
+            <NewsletterLink />
           </div>
         </div>
         
