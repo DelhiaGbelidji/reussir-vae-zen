@@ -85,6 +85,7 @@ Plateforme complète dédiée à l'accompagnement de la **Validation des Acquis 
   - Gestion des doublons
 - Sauvegarde dans **Supabase**
 - Interface localisée en français
+- Automatisation avec mailerlite
 
 ---
 
