@@ -1,73 +1,147 @@
-# Welcome to your Lovable project
+# 📝 Résumé des Fonctionnalités - Plateforme VAE
 
-## Project info
+## 🎯 Vue d'ensemble
+Plateforme complète dédiée à l'accompagnement de la **Validation des Acquis de l'Expérience (VAE)** avec :
+- Système d'authentification
+- Gestion de formations
+- Quiz interactifs
+- Chatbot intelligent
 
-**URL**: https://lovable.dev/projects/6a856cec-056c-44a8-9e32-dac87df5e0be
+---
 
-## How can I edit this code?
+## 🏠 Page d'accueil
+- Hero Section avec présentation de la VAE et appel à l'action
+- Section Fonctionnalités : Présentation des 3 piliers *(Documentation, Quiz, Certification)*
+- Section Explicative VAE : Processus détaillé étape par étape
+- Pop-up newsletter automatique pour les nouveaux visiteurs
+- Design responsive avec animations et gradients
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🎓 Système de Formations
+- **6 formations** disponibles dans la base de données
+- **Catalogue `/formations`** :
+  - Recherche par mots-clés
+  - Filtrage par domaine
+  - Affichage en grille avec cartes informatives
+- **Page détail `/formations/:slug`** :
+  - Informations : durée, prérequis, description
+  - Quiz associés
+  - Sidebar avec infos VAE
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6a856cec-056c-44a8-9e32-dac87df5e0be) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✅ Système de Quiz
+- **6 quiz** liés aux formations
+- **9 questions** au total
+- Types de questions :
+  - QCM
+  - Vrai/Faux
+- Interface `/quiz/:slug` :
+  - Barre de progression
+  - Navigation entre questions
+  - Validation + correction détaillée
+  - Sauvegarde automatique des résultats
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 👤 Authentification & Gestion Utilisateur
+- Inscription/Connexion via **Supabase Auth**
+- Validation **Zod** sur tous les formulaires
+- Gestion des rôles : **Admin / Utilisateur**
+- Création automatique de profils
+- Protection des routes sensibles
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📊 Dashboard Utilisateur
+- Statistiques personnelles :
+  - Nombre de quiz complétés
+  - Score moyen
+  - Date du dernier quiz
+- Historique des quiz :
+  - Scores, dates
+  - Badges de difficulté
+  - Pourcentages de réussite
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🤖 Chatbot Intelligent
+- Assistant VAE avec **OpenAI**
+- Interface chat flottante et rétractable
+- Fonctionnalités :
+  - Réponses contextuelles
+  - Historique des conversations
+  - Validation et sanitisation des entrées
+  - Limitation de taux anti-spam
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 📧 Système Newsletter
+- Pop-up automatique après 2 secondes
+- Formulaire avec :
+  - Double saisie email
+  - Validation Zod
+  - Gestion des doublons
+- Sauvegarde dans **Supabase**
+- Interface localisée en français
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📞 Page Contact
+- Formulaire avec :
+  - Nom, email, sujet, message
+  - Validation côté client
+  - Simulation d'envoi avec feedback
+- Design responsive et soigné
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔒 Sécurité
+- **Row Level Security (RLS)** sur toutes les tables
+- Politiques de sécurité par rôle
+- Validation Zod sur tous les inputs
+- Sanitisation HTML
+- Protection **CSRF** et injection SQL
+- Gestion sécurisée des secrets/env
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🛠 Architecture Technique
+- **Frontend** : React 18, TypeScript, Tailwind CSS
+- **Routing** : React Router DOM
+- **Backend** : Supabase (PostgreSQL + Auth + Edge Functions)
+- **UI** : Radix UI + shadcn/ui
+- **State Management** : React Query
+- **Validation** : Zod
+- **Icons** : Lucide React
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 📱 Responsive Design
+- Approche mobile-first
+- Breakpoints optimisés
+- Navigation adaptative (menu hamburger)
+- Composants UI responsives
+- Build performant avec **Vite**
 
-Simply open [Lovable](https://lovable.dev/projects/6a856cec-056c-44a8-9e32-dac87df5e0be) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🎨 Système de Design
+- Thème personnalisé (variables CSS)
+- Gradients et palette cohérente
+- Typographie hiérarchisée
+- Animations Tailwind CSS
+- Composants réutilisables avec variants
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📈 Fonctionnalités de Suivi
+- **Analytics** intégrées
+- Logs de conversations chatbot
+- Historique complet des quiz
+- Statistiques engagement newsletter
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+✨ Cette plateforme offre une **expérience complète, responsive et sécurisée** pour accompagner les candidats VAE dans leur démarche de validation des acquis professionnels.
