@@ -73,13 +73,13 @@ const Formations = () => {
             <div className="max-w-3xl mx-auto">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-grow">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10 pointer-events-none" />
                   <Input
                     type="text"
                     placeholder="Rechercher une formation..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 bg-background"
                   />
                 </div>
                 <div className="flex flex-wrap gap-2">
