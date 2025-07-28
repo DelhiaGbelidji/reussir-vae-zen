@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { signupSchema } from "@/lib/validation";
+import { z } from "zod";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -27,32 +29,42 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-        variant: "destructive",
-      });
-      return;
+    // Validate input with Zod schema
+    try {
+      signupSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erreur de validation",
+          description: error.issues[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsLoading(true);
     
     try {
-      const { error } = await signUp(formData.email, formData.password, formData.displayName);
+      const { error } = await signUp(formData.email.trim(), formData.password, formData.displayName.trim());
       
       if (error) {
+        // Provide secure error messages
+        const secureMessage = error.message.includes("already registered") 
+          ? "Cette adresse email est déjà utilisée"
+          : "Erreur lors de la création du compte. Veuillez réessayer.";
+          
         toast({
           title: "Erreur d'inscription",
-          description: error.message,
+          description: secureMessage,
           variant: "destructive",
         });
       } else {
         toast({
           title: "Inscription réussie !",
-          description: "Votre compte a été créé avec succès",
+          description: "Votre compte a été créé avec succès. Vérifiez votre email pour confirmer votre compte.",
         });
-        navigate("/");
+        navigate("/connexion");
       }
     } catch (error) {
       toast({

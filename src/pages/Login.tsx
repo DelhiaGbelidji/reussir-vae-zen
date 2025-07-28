@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { loginSchema } from "@/lib/validation";
+import { z } from "zod";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -31,15 +33,35 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate input
+    try {
+      loginSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erreur de validation",
+          description: error.issues[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setIsLoading(true);
     
     try {
-      const { error } = await signIn(formData.email, formData.password);
+      const { error } = await signIn(formData.email.trim(), formData.password);
       
       if (error) {
+        // Security: Don't reveal if user exists or not
+        const secureMessage = error.message.includes("Invalid login credentials") 
+          ? "Email ou mot de passe incorrect"
+          : "Erreur de connexion. Veuillez réessayer.";
+          
         toast({
           title: "Erreur de connexion",
-          description: error.message,
+          description: secureMessage,
           variant: "destructive",
         });
       } else {

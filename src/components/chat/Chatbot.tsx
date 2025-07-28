@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { chatMessageSchema, sanitizeHtml } from "@/lib/validation";
+import { z } from "zod";
 
 interface Message {
   id: string;
@@ -40,9 +42,27 @@ const Chatbot = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    // Validate and sanitize input
+    try {
+      chatMessageSchema.parse({ message: input });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const errorMessage: Message = {
+          id: Date.now().toString(),
+          text: 'Message invalide. Veuillez vérifier votre saisie.',
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
+        return;
+      }
+    }
+
+    const sanitizedInput = sanitizeHtml(input.trim());
+    
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: input,
+      text: sanitizedInput,
       isUser: true,
       timestamp: new Date(),
     };
@@ -54,7 +74,7 @@ const Chatbot = () => {
     try {
       // Call the chatbot edge function
       const { data, error } = await supabase.functions.invoke('chatbot', {
-        body: { message: input, userId: user?.id }
+        body: { message: sanitizedInput, userId: user?.id }
       });
 
       if (error) throw error;
@@ -72,7 +92,7 @@ const Chatbot = () => {
       if (user) {
         await supabase.from('chat_messages').insert({
           user_id: user.id,
-          message: input,
+          message: sanitizedInput,
           response: botMessage.text,
         });
       }

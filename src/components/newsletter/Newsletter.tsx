@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, X } from "lucide-react";
+import { newsletterSchema } from "@/lib/validation";
+import { z } from "zod";
 
 interface NewsletterProps {
   isOpen: boolean;
@@ -21,22 +23,18 @@ export const Newsletter = ({ isOpen, onClose }: NewsletterProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (email !== confirmEmail) {
-      toast({
-        title: "Erreur",
-        description: "Les adresses e-mail ne correspondent pas",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!email || !email.includes("@")) {
-      toast({
-        title: "Erreur", 
-        description: "Veuillez entrer une adresse e-mail valide",
-        variant: "destructive",
-      });
-      return;
+    // Validate input with Zod schema
+    try {
+      newsletterSchema.parse({ email: email.trim(), confirmEmail: confirmEmail.trim() });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erreur de validation",
+          description: error.issues[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -44,7 +42,7 @@ export const Newsletter = ({ isOpen, onClose }: NewsletterProps) => {
     try {
       const { error } = await supabase
         .from("newsletter_subscribers")
-        .insert([{ email }]);
+        .insert([{ email: email.trim().toLowerCase() }]);
 
       if (error) {
         if (error.code === "23505") { // Unique constraint violation
