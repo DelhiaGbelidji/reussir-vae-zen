@@ -71,8 +71,8 @@ const Formations = () => {
 
             {/* Search and filter */}
             <div className="max-w-3xl mx-auto">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-grow">
+              <div className="space-y-4">
+                <div className="relative">
                   <Input
                     type="text"
                     placeholder="Rechercher une formation..."
@@ -82,7 +82,7 @@ const Formations = () => {
                   />
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 pointer-events-none" />
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 justify-center">
                   <Button
                     variant={selectedDomain === null ? "default" : "outline"}
                     size="sm"
