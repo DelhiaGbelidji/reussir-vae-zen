@@ -108,8 +108,8 @@ const Chatbot = () => {
   }
 
   return (
-    <Card className={`fixed bottom-6 right-6 w-80 shadow-xl z-50 transition-all duration-300 ${
-      isMinimized ? 'h-16' : 'h-96'
+    <Card className={`fixed bottom-6 right-6 w-80 shadow-xl z-50 transition-all duration-300 flex flex-col ${
+      isMinimized ? 'h-16' : 'h-[500px]'
     }`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
@@ -137,8 +137,8 @@ const Chatbot = () => {
       </CardHeader>
       
       {!isMinimized && (
-        <CardContent className="flex flex-col h-full p-0">
-          <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
+        <CardContent className="flex flex-col flex-1 p-0 overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-3 space-y-3">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -169,7 +169,7 @@ const Chatbot = () => {
             <div ref={messagesEndRef} />
           </div>
           
-          <div className="p-3 border-t bg-background">
+          <div className="p-3 border-t bg-background flex-shrink-0">
             <div className="flex gap-2 items-center">
               <Input
                 value={input}
